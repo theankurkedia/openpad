@@ -1,4 +1,3 @@
-import React from 'react';
 import { Editor as DraftEditor } from 'draft-js';
 import 'draft-js/dist/Draft.css';
 
