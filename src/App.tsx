@@ -7,6 +7,7 @@ function App() {
   const [editorState, setEditorState] = React.useState(() =>
     EditorState.createEmpty()
   );
+  const [initHydrated, setInitHydrated] = React.useState(false);
   React.useEffect(() => {
     let parseData;
     let urlData = window?.location?.search?.split('?data=');
@@ -19,6 +20,7 @@ function App() {
         EditorState.createWithContent(ContentState.createFromText(parseData))
       );
     }
+    setInitHydrated(true);
   }, []);
 
   const clearState = () => {
@@ -69,7 +71,11 @@ function App() {
           saveState={() => saveState()}
         />
         <div className='editor'>
-          <Editor editorState={editorState} setEditorState={setEditorState} />
+          <Editor
+            editorState={editorState}
+            setEditorState={setEditorState}
+            initHydrated={initHydrated}
+          />
         </div>
       </div>
     </div>

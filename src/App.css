@@ -13,7 +13,7 @@
 
 .editor {
     border: 1px solid grey;
-    padding: 6px;
+    padding: 12px;
     border-radius: 4px;
     margin-right: 36px;
     min-height: 200px;
@@ -22,10 +22,19 @@
 .button {
     width: 100px;
     margin-left: 10px;
-    background-color: rgb(20, 184, 166);
+    background-color: #2563eb;
     color: white;
     border-width: 0;
     font-weight: 700;
     border-radius: 10px;
     height: 40px;
+}
+
+div.DraftEditor-root {
+    min-height: 200px;
+}
+
+div.DraftEditor-editorContainer,
+div.public-DraftEditor-content {
+    min-height: 200px;
 }
