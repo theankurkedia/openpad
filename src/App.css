@@ -16,7 +16,7 @@
     padding: 6px;
     border-radius: 4px;
     margin-right: 36px;
-    height: 200px;
+    min-height: 200px;
 }
 
 .button {
