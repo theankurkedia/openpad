@@ -1,36 +1,20 @@
 import React from 'react';
 
-export function ActionButtonGroup({
-  clearState,
-  saveState,
-  copyLink,
-}: {
-  clearState: () => void;
-  saveState: () => void;
-  copyLink: () => Promise<any>;
-}) {
-  const copyStateMap = ['Copy link', 'Copying...', 'Link copied'];
-  const [copyState, setCopyState] = React.useState(0);
-  // 0 -> nothing, 1 -> copying, 2 -> copied
-  const copy = () => {
-    setCopyState(1);
-    copyLink().then(
-      (response: any) => {
-        if (response) {
-          setCopyState(2);
-          setTimeout(() => {
-            setCopyState(0);
-          }, 5000);
-        } else {
-          setCopyState(0);
-        }
-      },
-      (error: any) => {
-        console.log('error', error);
-        setCopyState(0);
-      }
-    );
-  };
+type ActionButtonGroupProps = {
+  clear: () => void;
+  save: () => void;
+  copy: () => void;
+  copyStates: Array<string>;
+  copyState: number;
+};
+
+function ActionButtonGroup({
+  clear,
+  save,
+  copy,
+  copyStates,
+  copyState,
+}: ActionButtonGroupProps) {
   return (
     <div
       style={{
@@ -40,15 +24,29 @@ export function ActionButtonGroup({
         paddingBottom: 20,
       }}
     >
-      <button className='button' onClick={saveState}>
+      <button className='button' onClick={save} aria-label='save'>
         Save
       </button>
-      <button className='button' onClick={copy} disabled={copyState === 1}>
-        {copyStateMap[copyState]}
+      <button
+        className='button'
+        onClick={copy}
+        disabled={copyState === 1}
+        aria-label='copy'
+      >
+        {copyStates[copyState]}
       </button>
-      <button className='button' onClick={clearState}>
+      <button className='button' onClick={clear} aria-label='clear'>
         Clear
       </button>
     </div>
   );
 }
+
+function areEqual(
+  prevProps: ActionButtonGroupProps,
+  nextProps: ActionButtonGroupProps
+) {
+  return prevProps.copyState === nextProps.copyState;
+}
+
+export default React.memo(ActionButtonGroup, areEqual);

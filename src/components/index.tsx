@@ -1,2 +1,2 @@
-export { Editor } from './Editor';
-export { ActionButtonGroup } from './ActionButtonGroup';
+export { default as Editor } from './Editor';
+export { default as ActionButtonGroup } from './ActionButtonGroup';
