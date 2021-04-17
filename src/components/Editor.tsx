@@ -1,13 +1,13 @@
-import React from 'react';
 import {
+  DraftHandleValue,
   Editor as DraftEditor,
   EditorState,
-  DraftHandleValue,
   getDefaultKeyBinding,
   KeyBindingUtil,
 } from 'draft-js';
-import { moveFocusToEnd } from '../utils';
 import 'draft-js/dist/Draft.css';
+import React from 'react';
+import { moveFocusToEnd } from '../utils';
 
 const { hasCommandModifier } = KeyBindingUtil;
 
