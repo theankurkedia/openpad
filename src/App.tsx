@@ -1,7 +1,8 @@
+import { ContentState, EditorState } from 'draft-js';
 import React from 'react';
-import { Editor, ActionButtonGroup } from './components';
-import { EditorState, ContentState } from 'draft-js';
 import './App.css';
+import { ActionButtonGroup, Editor } from './components';
+import { shortenAndCopyUrl } from './utils';
 
 function App() {
   const [editorState, setEditorState] = React.useState(() =>
@@ -38,6 +39,7 @@ function App() {
       window.history.pushState('data', 'OpenPad', dataUrl);
     }
   };
+
   const copyLink = () => {
     return new Promise((resolve, reject) => {
       const encodedData = encodeURIComponent(
@@ -46,16 +48,7 @@ function App() {
       if (encodedData) {
         let dataUrl = `${window.location.origin}?data=${encodedData}`;
         saveState(dataUrl);
-        navigator.clipboard.writeText(dataUrl).then(
-          () => {
-            console.log('Url copied successfully');
-            resolve(dataUrl);
-          },
-          (error: any) => {
-            console.log('Error in copying url');
-            reject(error);
-          }
-        );
+        shortenAndCopyUrl(dataUrl, navigator, resolve, reject);
       } else {
         resolve(false);
       }
