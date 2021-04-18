@@ -29,13 +29,18 @@ function App() {
     let dataUrl = window.location.origin;
     window.history.pushState('data', 'OpenPad', dataUrl);
   };
+
   const save = (dataUrl?: any) => {
     dataUrl =
       dataUrl ??
-      `${window.location.origin}?data=${encodeURIComponent(
+      `${window.location.origin}${
         editorState.getCurrentContent().getPlainText()
-      )}`;
-    if (dataUrl) {
+          ? `/?data=${encodeURIComponent(
+              editorState.getCurrentContent().getPlainText()
+            )}`
+          : ''
+      }`;
+    if (window.location.href !== dataUrl) {
       window.history.pushState('data', 'OpenPad', dataUrl);
     }
   };
@@ -83,8 +88,8 @@ function App() {
       <div style={{ width: '100%' }}>
         <ActionButtonGroup
           clear={clear}
-          save={save}
           copy={copy}
+          save={save}
           copyState={copyState}
           copyStates={copyStates}
         />
