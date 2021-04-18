@@ -24,7 +24,7 @@ function ActionButtonGroup({
         paddingBottom: 20,
       }}
     >
-      <button className='button' onClick={save} aria-label='save'>
+      <button className='button' onClick={() => save()} aria-label='save'>
         Save
       </button>
       <button
@@ -42,11 +42,4 @@ function ActionButtonGroup({
   );
 }
 
-function areEqual(
-  prevProps: ActionButtonGroupProps,
-  nextProps: ActionButtonGroupProps
-) {
-  return prevProps.copyState === nextProps.copyState;
-}
-
-export default React.memo(ActionButtonGroup, areEqual);
+export default ActionButtonGroup;
