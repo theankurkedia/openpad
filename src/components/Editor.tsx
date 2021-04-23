@@ -4,6 +4,7 @@ import {
   EditorState,
   getDefaultKeyBinding,
   KeyBindingUtil,
+  RichUtils,
 } from 'draft-js';
 import 'draft-js/dist/Draft.css';
 import React from 'react';
@@ -37,6 +38,11 @@ function Editor({
     }
   }, [initHydrated]);
 
+  const onChange = (editorState: EditorState) => {
+    setEditorState(editorState);
+  };
+
+  // All shortcuts here [https://tinyurl.com/yhkgzyem]
   const myKeyBindingFn = (e: any) => {
     if (
       e.keyCode === 83 /* `S` key */ &&
@@ -58,7 +64,11 @@ function Editor({
     }
     return getDefaultKeyBinding(e);
   };
-  const handleKeyCommand = (command: string): DraftHandleValue => {
+
+  const handleKeyCommand = (
+    command: string,
+    editorState: EditorState
+  ): DraftHandleValue => {
     if (command === 'ctrl_s_command') {
       save();
       return 'handled';
@@ -69,6 +79,13 @@ function Editor({
       clear();
       return 'handled';
     }
+
+    const newState = RichUtils.handleKeyCommand(editorState, command);
+    if (newState) {
+      onChange(newState);
+      return 'handled';
+    }
+
     return 'not-handled';
   };
 
@@ -78,9 +95,7 @@ function Editor({
       editorState={editorState}
       handleKeyCommand={handleKeyCommand}
       keyBindingFn={myKeyBindingFn}
-      onChange={(val: any) => {
-        setEditorState(val);
-      }}
+      onChange={onChange}
     />
   );
 }

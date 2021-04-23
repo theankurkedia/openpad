@@ -1,25 +1,34 @@
-import { ContentState, EditorState } from 'draft-js';
+import {
+  ContentState,
+  EditorState,
+  convertToRaw,
+  convertFromRaw,
+} from 'draft-js';
 import React from 'react';
 import './App.css';
 import { ActionButtonGroup, Editor } from './components';
 import { shortenAndCopyUrl } from './utils';
+
+const getEncodedContent = (content: ContentState) => {
+  return encodeURIComponent(JSON.stringify(convertToRaw(content)));
+};
+const getDecodedContent = (raw: string): ContentState => {
+  return convertFromRaw(JSON.parse(decodeURIComponent(raw)));
+};
 
 function App() {
   const [editorState, setEditorState] = React.useState(() =>
     EditorState.createEmpty()
   );
   const [initHydrated, setInitHydrated] = React.useState(false);
+
   React.useEffect(() => {
     let parseData;
     let urlData = window?.location?.search?.split('?data=');
     parseData =
-      urlData && urlData.length > 1
-        ? decodeURIComponent(urlData[1])
-        : undefined;
+      urlData && urlData.length > 1 ? getDecodedContent(urlData[1]) : undefined;
     if (parseData) {
-      setEditorState(
-        EditorState.createWithContent(ContentState.createFromText(parseData))
-      );
+      setEditorState(EditorState.createWithContent(parseData));
     }
     setInitHydrated(true);
   }, []);
@@ -35,9 +44,7 @@ function App() {
       dataUrl ??
       `${window.location.origin}${
         editorState.getCurrentContent().getPlainText()
-          ? `/?data=${encodeURIComponent(
-              editorState.getCurrentContent().getPlainText()
-            )}`
+          ? `/?data=${getEncodedContent(editorState.getCurrentContent())}`
           : ''
       }`;
     if (window.location.href !== dataUrl) {
@@ -47,11 +54,10 @@ function App() {
 
   const copyLink = () => {
     return new Promise((resolve, reject) => {
-      const encodedData = encodeURIComponent(
-        editorState.getCurrentContent().getPlainText()
-      );
-      if (encodedData) {
-        let dataUrl = `${window.location.origin}?data=${encodedData}`;
+      if (editorState.getCurrentContent().getPlainText()) {
+        let dataUrl = `${window.location.origin}?data=${getEncodedContent(
+          editorState.getCurrentContent()
+        )}`;
         save(dataUrl);
         shortenAndCopyUrl(dataUrl, navigator, resolve, reject);
       } else {
