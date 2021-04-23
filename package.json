@@ -23,19 +23,14 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "prepare": "husky install"
   },
   "eslintConfig": {
     "extends": [
       "react-app",
       "react-app/jest"
     ]
-  },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-      "pre-commit": "yarn lint && yarn test"
-    }
   },
   "browserslist": {
     "production": [
@@ -50,6 +45,6 @@
     ]
   },
   "devDependencies": {
-    "husky": "^4.2.5"
+    "husky": "^6.0.0"
   }
 }
