@@ -47,5 +47,11 @@
   "devDependencies": {
     "husky": "^6.0.0",
     "pinst": "^2.1.6"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "yarn lint && yarn test && yarn prepare"
+    }
   }
 }
