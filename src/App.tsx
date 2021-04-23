@@ -1,20 +1,12 @@
-import {
-  ContentState,
-  EditorState,
-  convertToRaw,
-  convertFromRaw,
-} from 'draft-js';
+import { EditorState } from 'draft-js';
 import React from 'react';
 import './App.css';
 import { ActionButtonGroup, Editor } from './components';
-import { shortenAndCopyUrl } from './utils';
-
-const getEncodedContent = (content: ContentState) => {
-  return encodeURIComponent(JSON.stringify(convertToRaw(content)));
-};
-const getDecodedContent = (raw: string): ContentState => {
-  return convertFromRaw(JSON.parse(decodeURIComponent(raw)));
-};
+import {
+  shortenAndCopyUrl,
+  getEncodedContent,
+  getDecodedContent,
+} from './utils';
 
 function App() {
   const [editorState, setEditorState] = React.useState(() =>
