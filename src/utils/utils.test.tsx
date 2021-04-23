@@ -10,7 +10,9 @@ describe('getEncodedContent', () => {
         ).getCurrentContent()
       )
     ).toEqual(
-      expect.stringContaining('text%22%3A%22Test%22%2C%22type%22%3A%22unstyled')
+      expect.not.stringContaining(
+        'text%22%3A%22Test%22%2C%22type%22%3A%22unstyled'
+      )
     );
   });
 });
