@@ -20,8 +20,7 @@ function ActionButtonGroup({
       style={{
         justifyContent: 'flex-end',
         display: 'flex',
-        marginRight: 36,
-        paddingBottom: 20,
+        paddingBottom: 24,
       }}
     >
       <button className='button' onClick={() => save()} aria-label='save'>
