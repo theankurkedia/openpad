@@ -8,15 +8,19 @@
   justify-content: flex-start;
   font-size: calc(10px + 2vmin);
   color: white;
-  padding: 20px;
+  padding: 36px;
 }
 
+@media only screen and (max-width: 500px) {
+  .App {
+    padding: 24px;
+  }
+}
 .editor {
   border: 1px solid grey;
   padding: 12px;
-  border-radius: 4px;
-  margin-right: 36px;
-  min-height: 200px;
+  border-radius: 10px;
+  min-height: 300px;
 }
 
 .button {
