@@ -16,6 +16,17 @@
     padding: 24px;
   }
 }
+
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.header img {
+  padding-right: 6px;
+}
+
 .editor {
   border: 1px solid grey;
   padding: 12px;
@@ -36,7 +47,7 @@
 
 .button:focus {
   outline: none;
-  box-shadow: 0 0 5px 0 #ddd;
+  box-shadow: 0px 0px 5px #ddd, 0px 0px 5px #ddd;
 }
 
 div.DraftEditor-root {
