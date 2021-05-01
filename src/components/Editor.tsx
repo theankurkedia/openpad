@@ -91,6 +91,7 @@ function Editor({
 
   return (
     <DraftEditor
+      ariaLabel='editor'
       ref={editorRef}
       editorState={editorState}
       handleKeyCommand={handleKeyCommand}
