@@ -6,9 +6,9 @@ import { ShortcutModal } from './components';
 function App() {
   return (
     <div className='App'>
-      <div className='header'>
-        <img src={'./logo192.png'} height='46' width='46' alt='openpad-logo' />
-        <h2>OpenPad</h2>
+      <div className='header' role='header' aria-label='openpad-header'>
+        <img src={'./logo512.png'} height='56' width='56' alt='openpad-logo' />
+        <h1>OpenPad</h1>
       </div>
       <Home />
       <ShortcutModal />
