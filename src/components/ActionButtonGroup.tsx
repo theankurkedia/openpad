@@ -41,4 +41,4 @@ function ActionButtonGroup({
   );
 }
 
-export default ActionButtonGroup;
+export default React.memo(ActionButtonGroup);

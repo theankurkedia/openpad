@@ -1,16 +1,5 @@
 import React from 'react';
-
-const SHORTCUTS = [
-  {
-    key: '⌘ B',
-    value: 'Bold',
-  },
-  { key: '⌘ I', value: 'Italic' },
-  { key: '⌘ J', value: 'Code' },
-  { key: '⌘ S', value: 'Save' },
-  { key: '⌘ X', value: 'Clear', selection: false },
-  { key: '⌘ C', value: 'Copy link', selection: false },
-];
+import { SHORTCUTS } from '../../constants';
 
 function ShortcutBlock({ shortcut }: { shortcut: any }) {
   return (
@@ -25,6 +14,7 @@ function ShortcutBlock({ shortcut }: { shortcut: any }) {
     </div>
   );
 }
+
 function ShortcutModalContent() {
   const [visible, setVisible] = React.useState(false);
 
@@ -83,4 +73,4 @@ function ShortcutModalContent() {
   );
 }
 
-export default ShortcutModalContent;
+export default React.memo(ShortcutModalContent);
