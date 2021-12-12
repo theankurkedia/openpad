@@ -1,8 +1,8 @@
-import { getEncodedContent } from './index';
+import { getEncodedContent } from '.';
 import { EditorState, ContentState } from 'draft-js';
 
 describe('getEncodedContent', () => {
-  test('Test string', () => {
+  test('Is valid string', () => {
     expect(
       getEncodedContent(
         EditorState.createWithContent(

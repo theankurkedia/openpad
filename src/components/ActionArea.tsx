@@ -14,10 +14,13 @@ function ActionArea() {
   );
   const [initHydrated, setInitHydrated] = React.useState(false);
 
+  /**
+   * Check if the data is stored in the url. If so, hydrate the editor.
+   * The data stars with `data=` query string
+   */
   React.useEffect(() => {
-    let parseData;
     let urlData = window?.location?.search?.split('?data=');
-    parseData =
+    let parseData =
       urlData && urlData.length > 1 ? getDecodedContent(urlData[1]) : undefined;
     if (parseData) {
       setEditorState(EditorState.createWithContent(parseData));
@@ -31,7 +34,7 @@ function ActionArea() {
     window.history.pushState('data', 'OpenPad', dataUrl);
   };
 
-  const save = (dataUrl?: any) => {
+  const save = (dataUrl?: string) => {
     dataUrl =
       dataUrl ??
       `${window.location.origin}${
@@ -51,6 +54,7 @@ function ActionArea() {
           editorState.getCurrentContent()
         )}`;
         save(dataUrl);
+        // Generating link only if requested, otherwise just save the data in url
         shortenAndCopyUrl(dataUrl, navigator, resolve, reject);
       } else {
         resolve(false);
@@ -59,8 +63,8 @@ function ActionArea() {
   };
 
   const copyStates = ['Copy link', 'Copying...', 'Link copied'];
-  const [copyState, setCopyState] = React.useState(0);
   // 0 -> nothing, 1 -> copying, 2 -> copied
+  const [copyState, setCopyState] = React.useState(0);
   const copy = () => {
     setCopyState(1);
     copyLink().then(
@@ -74,7 +78,7 @@ function ActionArea() {
           setCopyState(0);
         }
       },
-      (error: any) => {
+      (error: Error) => {
         console.log('error', error);
         setCopyState(0);
       }
@@ -86,8 +90,7 @@ function ActionArea() {
         clear={clear}
         copy={copy}
         save={save}
-        copyState={copyState}
-        copyStates={copyStates}
+        copyState={copyStates[copyState]}
       />
       <div className='editor'>
         <Editor
