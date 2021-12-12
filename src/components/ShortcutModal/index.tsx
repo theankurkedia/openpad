@@ -1,15 +1,15 @@
-import React, { Suspense } from 'react';
+import React from 'react';
+import ShortcutModalContent from './Content';
 import Overlay from './Overlay';
-const ShortcutModalContent = React.lazy(() => import('./Content'));
 
 function ShortcutModal() {
   const [visible, setVisible] = React.useState(false);
 
   React.useEffect(() => {
-    const modalVisibleCallback = (event: any) => {
+    const modalVisibleCallback = (event: KeyboardEvent) => {
       if (event.metaKey && event.code === 'Slash') {
         event.preventDefault();
-        setVisible(!visible);
+        setVisible((prev) => !prev);
         return;
       }
     };
@@ -17,13 +17,11 @@ function ShortcutModal() {
     return () => {
       document.removeEventListener('keydown', modalVisibleCallback);
     };
-  }, [visible]);
+  }, []);
 
   return (
     <Overlay visible={visible}>
-      <Suspense fallback={<div>Loading...</div>}>
-        <ShortcutModalContent />
-      </Suspense>
+      <ShortcutModalContent />
     </Overlay>
   );
 }

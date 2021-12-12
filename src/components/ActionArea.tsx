@@ -1,12 +1,12 @@
 import { EditorState } from 'draft-js';
 import React from 'react';
-import Editor from './Editor';
-import ActionButtonGroup from './ActionButtonGroup';
 import {
-  shortenAndCopyUrl,
-  getEncodedContent,
   getDecodedContent,
-} from './../utils';
+  getEncodedContent,
+  shortenAndCopyUrl,
+} from '../utils';
+import ActionButtonGroup from './ActionButtonGroup';
+import Editor from './Editor';
 
 function ActionArea() {
   const [editorState, setEditorState] = React.useState(() =>

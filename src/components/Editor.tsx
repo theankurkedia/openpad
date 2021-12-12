@@ -71,7 +71,6 @@ function Editor({
     editorState: EditorState
   ): DraftHandleValue => {
     switch (command) {
-      // TODO: handle undo/redo
       case 'ctrl_s_command':
         save();
         return 'handled';

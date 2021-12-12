@@ -1,37 +1,10 @@
 import React from 'react';
 import { SHORTCUTS } from '../../constants';
-
-function ShortcutBlock({ shortcut }: { shortcut: any }) {
-  return (
-    <div
-      style={{
-        display: 'flex',
-        padding: 4,
-      }}
-    >
-      <span style={{ minWidth: 200 }}>{shortcut.key}</span>
-      <span style={{ minWidth: 120 }}>{shortcut.value}</span>
-    </div>
-  );
-}
+import { ShortcutType } from '../../types';
+import ShortcutBlock from './Block';
 
 function ShortcutModalContent() {
-  const [visible, setVisible] = React.useState(false);
-
-  React.useEffect(() => {
-    const modalVisibleCallback = (event: any) => {
-      if (event.metaKey && event.code === 'Slash') {
-        event.preventDefault();
-        setVisible(!visible);
-        return;
-      }
-    };
-    document.addEventListener('keydown', modalVisibleCallback);
-    return () => {
-      document.removeEventListener('keydown', modalVisibleCallback);
-    };
-  }, [visible]);
-
+  console.log('*** 🔥 loaded');
   return (
     <div
       style={{
@@ -53,22 +26,9 @@ function ShortcutModalContent() {
         <span style={{ minWidth: 200, fontWeight: 'bold' }}>Key Binding</span>
         <span style={{ minWidth: 120, fontWeight: 'bold' }}>Command</span>
       </div>
-      {SHORTCUTS.filter((val) => val.selection !== false).map(
-        (shortcut: any, key: number) => (
-          <ShortcutBlock
-            shortcut={shortcut}
-            key={`non-selection-shortcut-${key}`}
-          />
-        )
-      )}
-      {SHORTCUTS.filter((val) => val.selection === false).map(
-        (shortcut: any, key: number) => (
-          <ShortcutBlock
-            shortcut={shortcut}
-            key={`selection-shortcut-${key}`}
-          />
-        )
-      )}
+      {SHORTCUTS.map((shortcut: ShortcutType, key: number) => (
+        <ShortcutBlock shortcut={shortcut} key={`shortcut-${key}`} />
+      ))}
     </div>
   );
 }
