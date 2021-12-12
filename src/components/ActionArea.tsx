@@ -1,13 +1,14 @@
 import { EditorState } from 'draft-js';
 import React from 'react';
-import { ActionButtonGroup, Editor } from './../components';
 import {
-  shortenAndCopyUrl,
-  getEncodedContent,
   getDecodedContent,
-} from './../utils';
+  getEncodedContent,
+  shortenAndCopyUrl,
+} from '../utils';
+import ActionButtonGroup from './ActionButtonGroup';
+import Editor from './Editor';
 
-function Home() {
+function ActionArea() {
   const [editorState, setEditorState] = React.useState(() =>
     EditorState.createEmpty()
   );
@@ -102,4 +103,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default React.memo(ActionArea);

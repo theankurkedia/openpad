@@ -1,8 +1,8 @@
 import {
-  EditorState,
   ContentState,
-  convertToRaw,
   convertFromRaw,
+  convertToRaw,
+  EditorState,
 } from 'draft-js';
 
 export function moveFocusToEnd(editorState: EditorState) {

@@ -1,47 +1,10 @@
 import React from 'react';
+import { SHORTCUTS } from '../../constants';
+import { ShortcutType } from '../../types';
+import ShortcutBlock from './Block';
 
-const SHORTCUTS = [
-  {
-    key: '⌘ B',
-    value: 'Bold',
-  },
-  { key: '⌘ I', value: 'Italic' },
-  { key: '⌘ J', value: 'Code' },
-  { key: '⌘ S', value: 'Save' },
-  { key: '⌘ X', value: 'Clear', selection: false },
-  { key: '⌘ C', value: 'Copy link', selection: false },
-];
-
-function ShortcutBlock({ shortcut }: { shortcut: any }) {
-  return (
-    <div
-      style={{
-        display: 'flex',
-        padding: 4,
-      }}
-    >
-      <span style={{ minWidth: 200 }}>{shortcut.key}</span>
-      <span style={{ minWidth: 120 }}>{shortcut.value}</span>
-    </div>
-  );
-}
 function ShortcutModalContent() {
-  const [visible, setVisible] = React.useState(false);
-
-  React.useEffect(() => {
-    const modalVisibleCallback = (event: any) => {
-      if (event.metaKey && event.code === 'Slash') {
-        event.preventDefault();
-        setVisible(!visible);
-        return;
-      }
-    };
-    document.addEventListener('keydown', modalVisibleCallback);
-    return () => {
-      document.removeEventListener('keydown', modalVisibleCallback);
-    };
-  }, [visible]);
-
+  console.log('*** 🔥 loaded');
   return (
     <div
       style={{
@@ -63,24 +26,11 @@ function ShortcutModalContent() {
         <span style={{ minWidth: 200, fontWeight: 'bold' }}>Key Binding</span>
         <span style={{ minWidth: 120, fontWeight: 'bold' }}>Command</span>
       </div>
-      {SHORTCUTS.filter((val) => val.selection !== false).map(
-        (shortcut: any, key: number) => (
-          <ShortcutBlock
-            shortcut={shortcut}
-            key={`non-selection-shortcut-${key}`}
-          />
-        )
-      )}
-      {SHORTCUTS.filter((val) => val.selection === false).map(
-        (shortcut: any, key: number) => (
-          <ShortcutBlock
-            shortcut={shortcut}
-            key={`selection-shortcut-${key}`}
-          />
-        )
-      )}
+      {SHORTCUTS.map((shortcut: ShortcutType, key: number) => (
+        <ShortcutBlock shortcut={shortcut} key={`shortcut-${key}`} />
+      ))}
     </div>
   );
 }
 
-export default ShortcutModalContent;
+export default React.memo(ShortcutModalContent);

@@ -43,7 +43,7 @@ function Editor({
   };
 
   // All shortcuts here [https://tinyurl.com/yhkgzyem]
-  const myKeyBindingFn = (e: any) => {
+  const keyBindingFn = (e: any) => {
     if (
       e.keyCode === 83 /* `S` key */ &&
       hasCommandModifier(e) /* + `Ctrl` key */
@@ -52,6 +52,7 @@ function Editor({
     } else if (
       e.keyCode === 67 /* `C` key */ &&
       hasCommandModifier(e) /* + `Ctrl` key */ &&
+      // isCollapsed to check if no text is selected
       editorState.getSelection().isCollapsed()
     ) {
       return 'ctrl_c_command';
@@ -69,24 +70,25 @@ function Editor({
     command: string,
     editorState: EditorState
   ): DraftHandleValue => {
-    if (command === 'ctrl_s_command') {
-      save();
-      return 'handled';
-    } else if (command === 'ctrl_c_command') {
-      copy();
-      return 'handled';
-    } else if (command === 'ctrl_x_command') {
-      clear();
-      return 'handled';
+    switch (command) {
+      case 'ctrl_s_command':
+        save();
+        return 'handled';
+      case 'ctrl_c_command':
+        copy();
+        return 'handled';
+      case 'ctrl_x_command':
+        clear();
+        return 'handled';
+      default:
+        // Check if the command needs to be handled by rich text utilities
+        const newState = RichUtils.handleKeyCommand(editorState, command);
+        if (newState) {
+          onChange(newState);
+          return 'handled';
+        }
+        return 'not-handled';
     }
-
-    const newState = RichUtils.handleKeyCommand(editorState, command);
-    if (newState) {
-      onChange(newState);
-      return 'handled';
-    }
-
-    return 'not-handled';
   };
 
   return (
@@ -95,7 +97,7 @@ function Editor({
       ref={editorRef}
       editorState={editorState}
       handleKeyCommand={handleKeyCommand}
-      keyBindingFn={myKeyBindingFn}
+      keyBindingFn={keyBindingFn}
       onChange={onChange}
     />
   );
