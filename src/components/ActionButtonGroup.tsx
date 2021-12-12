@@ -4,15 +4,13 @@ type ActionButtonGroupProps = {
   clear: () => void;
   save: () => void;
   copy: () => void;
-  copyStates: Array<string>;
-  copyState: number;
+  copyState: string;
 };
 
 function ActionButtonGroup({
   clear,
   save,
   copy,
-  copyStates,
   copyState,
 }: ActionButtonGroupProps) {
   return (
@@ -29,10 +27,10 @@ function ActionButtonGroup({
       <button
         className='button'
         onClick={copy}
-        disabled={copyState === 1}
+        disabled={copyState.includes('Copying')}
         aria-label='copy'
       >
-        {copyStates[copyState]}
+        {copyState}
       </button>
       <button className='button' onClick={clear} aria-label='clear'>
         Clear

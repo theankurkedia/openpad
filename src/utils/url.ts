@@ -1,12 +1,12 @@
 import TinyURL from 'tinyurl';
 
 async function getShortenedUrl(url: string): Promise<string> {
-  return new Promise((resolve: any, reject: any) => {
+  return new Promise<string>((resolve, reject) => {
     TinyURL.shorten(url).then(
-      function (res: any) {
+      function (res: string) {
         resolve(res);
       },
-      function (err: any) {
+      function (err: Error) {
         console.log(err);
         reject(err);
       }
@@ -14,14 +14,17 @@ async function getShortenedUrl(url: string): Promise<string> {
   });
 }
 
-async function copyToClipboard(value: string, navigator: any) {
-  return new Promise((resolve, reject) => {
+async function copyToClipboard(
+  value: string,
+  navigator: Navigator
+): Promise<string> {
+  return new Promise<string>((resolve, reject) => {
     navigator.clipboard.writeText(value).then(
       () => {
         console.log('Url copied successfully');
         resolve(value);
       },
-      (error: any) => {
+      (error: Error) => {
         console.log('Error in copying url');
         reject(value);
       }
@@ -31,15 +34,15 @@ async function copyToClipboard(value: string, navigator: any) {
 
 export function shortenAndCopyUrl(
   value: string,
-  navigator: any,
-  resolve: any,
-  reject: any
+  navigator: Navigator,
+  resolve: (value: string) => void,
+  reject: (value: string) => void
 ) {
   getShortenedUrl(value)
     .then((resp: string) => {
       // If shorten success, trying to copy it to clipboard
       copyToClipboard(resp, navigator)
-        .then((copyResp: any) => {
+        .then((copyResp: string) => {
           resolve(copyResp);
         })
         .catch((error) => {
@@ -48,7 +51,7 @@ export function shortenAndCopyUrl(
             'Error in copying shortened url to clipboard, trying to copy original value'
           );
           copyToClipboard(value, navigator)
-            .then((copyResp: any) => {
+            .then((copyResp: string) => {
               resolve(copyResp);
             })
             .catch((copyError) => {
@@ -61,7 +64,7 @@ export function shortenAndCopyUrl(
       console.log('Error in shortening url, trying original text', err);
       // Shortening failed, trying to copy original value
       copyToClipboard(value, navigator)
-        .then((copyResp: any) => {
+        .then((copyResp: string) => {
           resolve(copyResp);
         })
         .catch((copyError) => {

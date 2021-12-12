@@ -4,7 +4,6 @@ import { ShortcutType } from '../../types';
 import ShortcutBlock from './Block';
 
 function ShortcutModalContent() {
-  console.log('*** 🔥 loaded');
   return (
     <div
       style={{

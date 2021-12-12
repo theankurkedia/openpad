@@ -14,7 +14,7 @@ const { hasCommandModifier } = KeyBindingUtil;
 
 type EditorProps = {
   editorState: EditorState;
-  setEditorState: (val: any) => void;
+  setEditorState: (val: EditorState) => void;
   initHydrated: boolean;
   save: () => void;
   copy: () => void;
@@ -29,7 +29,13 @@ function Editor({
   copy,
   clear,
 }: EditorProps) {
-  const editorRef: any = React.createRef();
+  const editorRef = React.createRef<DraftEditor>();
+
+  /**
+   * Using this to manage the focus of the editor, once all the data is hydrated.
+   * If data is loaded, move the caret to the end of content.
+   * If no data is present, just focus on the editor.
+   */
   React.useEffect(() => {
     if (editorState.getCurrentContent().getPlainText()) {
       setEditorState(moveFocusToEnd(editorState));
@@ -43,7 +49,7 @@ function Editor({
   };
 
   // All shortcuts here [https://tinyurl.com/yhkgzyem]
-  const keyBindingFn = (e: any) => {
+  const keyBindingFn = (e: React.KeyboardEvent) => {
     if (
       e.keyCode === 83 /* `S` key */ &&
       hasCommandModifier(e) /* + `Ctrl` key */
