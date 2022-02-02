@@ -4,6 +4,7 @@ import {
   getDecodedContent,
   getEncodedContent,
   shortenAndCopyUrl,
+  useAutoSave,
 } from '../utils';
 import ActionButtonGroup from './ActionButtonGroup';
 import Editor from './Editor';
@@ -28,23 +29,28 @@ function ActionArea() {
     setInitHydrated(true);
   }, []);
 
+  const save = React.useCallback(
+    (dataUrl?: string) => {
+      dataUrl =
+        dataUrl ??
+        `${window.location.origin}${
+          editorState.getCurrentContent().getPlainText()
+            ? `/?data=${getEncodedContent(editorState.getCurrentContent())}`
+            : ''
+        }`;
+      if (window.location.href !== dataUrl) {
+        window.history.pushState('data', 'OpenPad', dataUrl);
+      }
+    },
+    [editorState]
+  );
+
+  useAutoSave(editorState, save);
+
   const clear = () => {
     setEditorState(EditorState.createEmpty());
     let dataUrl = window.location.origin;
     window.history.pushState('data', 'OpenPad', dataUrl);
-  };
-
-  const save = (dataUrl?: string) => {
-    dataUrl =
-      dataUrl ??
-      `${window.location.origin}${
-        editorState.getCurrentContent().getPlainText()
-          ? `/?data=${getEncodedContent(editorState.getCurrentContent())}`
-          : ''
-      }`;
-    if (window.location.href !== dataUrl) {
-      window.history.pushState('data', 'OpenPad', dataUrl);
-    }
   };
 
   const copyLink = () => {
