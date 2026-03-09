@@ -59,7 +59,7 @@ function ActionArea() {
     window.history.pushState('data', 'OpenPad', window.location.origin);
   }, []);
 
-  const copyStates = ['Copy link', 'Copying...', 'Link copied'];
+  const copyStates = ['Copy link', 'Copying...', 'Copied!'];
   const [copyState, setCopyState] = React.useState(0);
 
   const copyLink = React.useCallback(() => {
@@ -116,15 +116,17 @@ function ActionArea() {
   if (!initHydrated) return null;
 
   return (
-    <div style={{ width: '100%' }}>
-      <ActionButtonGroup
-        clear={clear}
-        copy={copy}
-        save={save}
-        copyState={copyStates[copyState]}
-        mode={mode}
-        setMode={handleModeChange}
-      />
+    <div className="editor-card">
+      <div className="toolbar">
+        <ActionButtonGroup
+          clear={clear}
+          copy={copy}
+          save={save}
+          copyState={copyStates[copyState]}
+          mode={mode}
+          setMode={handleModeChange}
+        />
+      </div>
       <div className="editor">
         <Editor
           key={mode}
