@@ -1,112 +1,181 @@
+import { useEffect, useCallback } from 'react';
+import { LexicalComposer } from '@lexical/react/LexicalComposer';
+import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
+import { ContentEditable } from '@lexical/react/LexicalContentEditable';
+import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
+import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
+import { ListPlugin } from '@lexical/react/LexicalListPlugin';
+import { CheckListPlugin } from '@lexical/react/LexicalCheckListPlugin';
+import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPlugin';
+import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import { HeadingNode, QuoteNode } from '@lexical/rich-text';
+import { ListNode, ListItemNode } from '@lexical/list';
+import { LinkNode } from '@lexical/link';
+import { CodeNode } from '@lexical/code';
 import {
-  DraftHandleValue,
-  Editor as DraftEditor,
-  EditorState,
-  getDefaultKeyBinding,
-  KeyBindingUtil,
-  RichUtils,
-} from 'draft-js';
-import 'draft-js/dist/Draft.css';
-import React from 'react';
-import { moveFocusToEnd } from '../utils';
+  $getSelection,
+  $isRangeSelection,
+  $getRoot,
+  FORMAT_TEXT_COMMAND,
+  KEY_DOWN_COMMAND,
+  COMMAND_PRIORITY_HIGH,
+  LexicalEditor,
+} from 'lexical';
+import { $convertFromMarkdownString } from '@lexical/markdown';
+import { EDITOR_TRANSFORMERS } from '../utils/Editor';
+import { EditorMode } from '../types';
 
-const { hasCommandModifier } = KeyBindingUtil;
+const theme = {
+  paragraph: 'editor-paragraph',
+  heading: {
+    h1: 'editor-heading-h1',
+    h2: 'editor-heading-h2',
+    h3: 'editor-heading-h3',
+  },
+  text: {
+    bold: 'editor-text-bold',
+    italic: 'editor-text-italic',
+    strikethrough: 'editor-text-strikethrough',
+    code: 'editor-text-code',
+  },
+  list: {
+    ul: 'editor-list-ul',
+    ol: 'editor-list-ol',
+    listitem: 'editor-list-item',
+    checklist: 'editor-checklist',
+    listitemChecked: 'editor-list-item-checked',
+    listitemUnchecked: 'editor-list-item-unchecked',
+  },
+  link: 'editor-link',
+  quote: 'editor-quote',
+};
+
+type KeyboardPluginProps = {
+  save: () => void;
+  copy: () => void;
+  clear: () => void;
+};
+
+function KeyboardShortcutsPlugin({ save, copy, clear }: KeyboardPluginProps) {
+  const [editor] = useLexicalComposerContext();
+
+  useEffect(() => {
+    return editor.registerCommand(
+      KEY_DOWN_COMMAND,
+      (event: KeyboardEvent) => {
+        if (!event.metaKey && !event.ctrlKey) return false;
+
+        switch (event.key) {
+          case 's': {
+            event.preventDefault();
+            save();
+            return true;
+          }
+          case 'j': {
+            event.preventDefault();
+            editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'code');
+            return true;
+          }
+          case 'c': {
+            const selection = $getSelection();
+            if ($isRangeSelection(selection) && selection.isCollapsed()) {
+              event.preventDefault();
+              copy();
+              return true;
+            }
+            return false;
+          }
+          case 'x': {
+            const selection = $getSelection();
+            if ($isRangeSelection(selection) && selection.isCollapsed()) {
+              event.preventDefault();
+              clear();
+              return true;
+            }
+            return false;
+          }
+          default:
+            return false;
+        }
+      },
+      COMMAND_PRIORITY_HIGH
+    );
+  }, [editor, save, copy, clear]);
+
+  return null;
+}
+
+function EditorRefPlugin({
+  onEditorReady,
+}: {
+  onEditorReady: (editor: LexicalEditor) => void;
+}) {
+  const [editor] = useLexicalComposerContext();
+
+  useEffect(() => {
+    onEditorReady(editor);
+  }, [editor, onEditorReady]);
+
+  return null;
+}
 
 type EditorProps = {
-  editorState: EditorState;
-  setEditorState: (val: EditorState) => void;
-  initHydrated: boolean;
+  mode: EditorMode;
+  initialMarkdown: string;
+  onEditorReady: (editor: LexicalEditor) => void;
   save: () => void;
   copy: () => void;
   clear: () => void;
 };
 
 function Editor({
-  editorState,
-  setEditorState,
-  initHydrated,
+  mode,
+  initialMarkdown,
+  onEditorReady,
   save,
   copy,
   clear,
 }: EditorProps) {
-  const editorRef = React.createRef<DraftEditor>();
-
-  /**
-   * Using this to manage the focus of the editor, once all the data is hydrated.
-   * If data is loaded, move the caret to the end of content.
-   * If no data is present, just focus on the editor.
-   */
-  React.useEffect(() => {
-    if (editorState.getCurrentContent().getPlainText()) {
-      setEditorState(moveFocusToEnd(editorState));
-    } else if (editorRef && editorRef.current) {
-      editorRef.current.focus();
+  const editorStateInit = useCallback(() => {
+    if (initialMarkdown) {
+      $convertFromMarkdownString(initialMarkdown, EDITOR_TRANSFORMERS);
+    } else if (mode === 'checkbox') {
+      const root = $getRoot();
+      root.clear();
+      const list = new ListNode('check', 1);
+      const item = new ListItemNode();
+      item.setChecked(false);
+      list.append(item);
+      root.append(list);
     }
-  }, [initHydrated]);
+  }, [initialMarkdown, mode]);
 
-  const onChange = (editorState: EditorState) => {
-    setEditorState(editorState);
-  };
-
-  // All shortcuts here [https://tinyurl.com/yhkgzyem]
-  const keyBindingFn = (e: React.KeyboardEvent) => {
-    if (
-      e.keyCode === 83 /* `S` key */ &&
-      hasCommandModifier(e) /* + `Ctrl` key */
-    ) {
-      return 'ctrl_s_command';
-    } else if (
-      e.keyCode === 67 /* `C` key */ &&
-      hasCommandModifier(e) /* + `Ctrl` key */ &&
-      // isCollapsed to check if no text is selected
-      editorState.getSelection().isCollapsed()
-    ) {
-      return 'ctrl_c_command';
-    } else if (
-      e.keyCode === 88 /* `X` key */ &&
-      hasCommandModifier(e) /* + `Ctrl` key */ &&
-      editorState.getSelection().isCollapsed()
-    ) {
-      return 'ctrl_x_command';
-    }
-    return getDefaultKeyBinding(e);
-  };
-
-  const handleKeyCommand = (
-    command: string,
-    editorState: EditorState
-  ): DraftHandleValue => {
-    switch (command) {
-      case 'ctrl_s_command':
-        save();
-        return 'handled';
-      case 'ctrl_c_command':
-        copy();
-        return 'handled';
-      case 'ctrl_x_command':
-        clear();
-        return 'handled';
-      default:
-        // Check if the command needs to be handled by rich text utilities
-        const newState = RichUtils.handleKeyCommand(editorState, command);
-        if (newState) {
-          onChange(newState);
-          return 'handled';
-        }
-        return 'not-handled';
-    }
+  const initialConfig = {
+    namespace: 'OpenPad',
+    theme,
+    onError: (error: Error) => console.error(error),
+    nodes: [HeadingNode, QuoteNode, ListNode, ListItemNode, LinkNode, CodeNode],
+    editorState: initialMarkdown || mode === 'checkbox' ? editorStateInit : undefined,
   };
 
   return (
-    <DraftEditor
-      ariaLabel='editor'
-      ref={editorRef}
-      editorState={editorState}
-      handleKeyCommand={handleKeyCommand}
-      keyBindingFn={keyBindingFn}
-      onChange={onChange}
-    />
+    <LexicalComposer key={mode} initialConfig={initialConfig}>
+      <RichTextPlugin
+        contentEditable={
+          <ContentEditable className="editor-content" aria-label="editor" />
+        }
+        ErrorBoundary={LexicalErrorBoundary}
+      />
+      <HistoryPlugin />
+      <AutoFocusPlugin />
+      <ListPlugin />
+      {mode === 'checkbox' && <CheckListPlugin />}
+      <MarkdownShortcutPlugin transformers={EDITOR_TRANSFORMERS} />
+      <KeyboardShortcutsPlugin save={save} copy={copy} clear={clear} />
+      <EditorRefPlugin onEditorReady={onEditorReady} />
+    </LexicalComposer>
   );
 }
 
-export default React.memo(Editor);
+export default Editor;

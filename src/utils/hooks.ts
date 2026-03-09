@@ -1,53 +1,56 @@
-import { EditorState } from 'draft-js';
-import { useEffect } from 'react';
-import { getEncodedContent } from './Editor';
+import { useEffect, useRef } from 'react';
+import { LexicalEditor } from 'lexical';
+import { getEncodedContent, getPlainText } from './Editor';
 
-export function useAutoSave(editorState: EditorState, save: () => void) {
+export function useAutoSave(editor: LexicalEditor | null, save: () => void) {
+  const unchangedCount = useRef(5);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
   useEffect(() => {
-    let autoSaveTimer: ReturnType<typeof setTimeout> | null = null;
-    let autoSaveTimerShutCounter = 5;
+    if (!editor) return;
 
-    const beforeUnloadHandler = (e: any) => {
+    const checkAndSave = () => {
+      const text = getPlainText(editor);
+      const currentEncoded = getEncodedContent(editor);
+      const urlData =
+        new URLSearchParams(window.location.search).get('data') || '';
+
       if (
-        editorState.getCurrentContent().getPlainText() &&
-        `?data=${getEncodedContent(editorState.getCurrentContent())}` !==
-          window.location.search
+        (window.location.search && !text) ||
+        (text && currentEncoded !== urlData)
       ) {
-        // DOC: prevent the browser from closing the window in case there are unsaved changes
+        save();
+        unchangedCount.current = 5;
+      } else {
+        unchangedCount.current--;
+        if (unchangedCount.current <= 0 && intervalRef.current) {
+          clearInterval(intervalRef.current);
+          intervalRef.current = null;
+        }
+      }
+    };
+
+    intervalRef.current = setInterval(checkAndSave, 2 * 60 * 1000);
+
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      const text = getPlainText(editor);
+      const currentEncoded = getEncodedContent(editor);
+      const urlData =
+        new URLSearchParams(window.location.search).get('data') || '';
+
+      if (text && currentEncoded !== urlData) {
         save();
         e.preventDefault();
         e.returnValue = '';
         return 'Unsaved Changes';
       }
-      return;
     };
 
-    const initializeAutoSave = () => {
-      autoSaveTimer = setInterval(() => {
-        if (
-          (window.location.search &&
-            !editorState.getCurrentContent().getPlainText()) ||
-          (editorState.getCurrentContent().getPlainText() &&
-            `?data=${getEncodedContent(editorState.getCurrentContent())}` !==
-              window.location.search)
-        ) {
-          save();
-        } else {
-          autoSaveTimerShutCounter--;
-        }
-        //  DOC: shutdown the autosave after 5 unchanged save attempts
-        if (!autoSaveTimerShutCounter && autoSaveTimer) {
-          clearInterval(autoSaveTimer);
-        }
-        // Checking every 2 mins
-      }, 2 * 60 * 1000);
-    };
-    window.addEventListener('beforeunload', beforeUnloadHandler);
-    initializeAutoSave();
+    window.addEventListener('beforeunload', handleBeforeUnload);
 
     return () => {
-      if (autoSaveTimer) clearInterval(autoSaveTimer);
-      window.removeEventListener('beforeunload', beforeUnloadHandler);
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, [editorState, save]);
+  }, [editor, save]);
 }
