@@ -2,6 +2,7 @@
   "name": "openpad",
   "version": "0.2.0",
   "private": false,
+  "license": "GPL-3.0",
   "type": "module",
   "dependencies": {
     "@types/draft-js": "^0.10.44",
