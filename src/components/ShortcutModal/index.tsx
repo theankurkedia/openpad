@@ -12,6 +12,9 @@ function ShortcutModal() {
         setVisible((prev) => !prev);
         return;
       }
+      if (event.key === 'Escape') {
+        setVisible(false);
+      }
     };
     document.addEventListener('keydown', modalVisibleCallback);
     return () => {
@@ -19,9 +22,11 @@ function ShortcutModal() {
     };
   }, []);
 
+  const close = React.useCallback(() => setVisible(false), []);
+
   return (
-    <Overlay visible={visible}>
-      <ShortcutModalContent />
+    <Overlay visible={visible} onClose={close}>
+      <ShortcutModalContent onClose={close} />
     </Overlay>
   );
 }

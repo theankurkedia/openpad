@@ -1,5 +1,6 @@
 import React from 'react';
 import { LexicalEditor, $getRoot } from 'lexical';
+import { $createListNode, $createListItemNode } from '@lexical/list';
 import {
   getDecodedContent,
   getEncodedContent,
@@ -54,12 +55,20 @@ function ActionArea() {
     if (!editor) return;
 
     editor.update(() => {
-      $getRoot().clear();
+      const root = $getRoot();
+      root.clear();
+      if (mode === 'checkbox') {
+        const list = $createListNode('check');
+        const item = $createListItemNode();
+        item.setChecked(false);
+        list.append(item);
+        root.append(list);
+      }
     });
     window.history.pushState('data', 'OpenPad', window.location.origin);
-  }, []);
+  }, [mode]);
 
-  const copyStates = ['Copy link', 'Copying...', 'Link copied'];
+  const copyStates = ['Copy link', 'Copying...', 'Copied!'];
   const [copyState, setCopyState] = React.useState(0);
 
   const copyLink = React.useCallback(() => {
@@ -116,16 +125,18 @@ function ActionArea() {
   if (!initHydrated) return null;
 
   return (
-    <div style={{ width: '100%' }}>
-      <ActionButtonGroup
-        clear={clear}
-        copy={copy}
-        save={save}
-        copyState={copyStates[copyState]}
-        mode={mode}
-        setMode={handleModeChange}
-      />
-      <div className="editor">
+    <div className="editor-card">
+      <div className="toolbar">
+        <ActionButtonGroup
+          clear={clear}
+          copy={copy}
+          save={save}
+          copyState={copyStates[copyState]}
+          mode={mode}
+          setMode={handleModeChange}
+        />
+      </div>
+      <div className={`editor ${mode === 'checkbox' ? 'editor-checklist-mode' : ''}`}>
         <Editor
           key={mode}
           mode={mode}

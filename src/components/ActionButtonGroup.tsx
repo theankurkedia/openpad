@@ -1,6 +1,21 @@
 import React from 'react';
 import { EditorMode } from '../types';
 
+const TextIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 7V4h16v3" />
+    <path d="M9 20h6" />
+    <path d="M12 4v16" />
+  </svg>
+);
+
+const ChecklistIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M9 11l3 3L22 4" />
+    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+  </svg>
+);
+
 type ActionButtonGroupProps = {
   clear: () => void;
   save: () => void;
@@ -19,21 +34,21 @@ function ActionButtonGroup({
   setMode,
 }: ActionButtonGroupProps) {
   return (
-    <div className="action-bar">
+    <>
       <div className="mode-switcher">
         <button
           className={`mode-button ${mode === 'plain' ? 'mode-active' : ''}`}
           onClick={() => setMode('plain')}
           aria-label="plain text mode"
         >
-          Text
+          <TextIcon /> Text
         </button>
         <button
           className={`mode-button ${mode === 'checkbox' ? 'mode-active' : ''}`}
           onClick={() => setMode('checkbox')}
           aria-label="checkbox mode"
         >
-          Checklist
+          <ChecklistIcon /> Checklist
         </button>
       </div>
       <div className="button-group">
@@ -41,7 +56,7 @@ function ActionButtonGroup({
           Save
         </button>
         <button
-          className="button"
+          className="button button-primary"
           onClick={copy}
           disabled={copyState.includes('Copying')}
           aria-label="copy"
@@ -52,7 +67,7 @@ function ActionButtonGroup({
           Clear
         </button>
       </div>
-    </div>
+    </>
   );
 }
 
