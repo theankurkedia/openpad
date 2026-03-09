@@ -287,70 +287,120 @@
   margin: 4px 0;
 }
 
+/* ── Checklist mode container ── */
+.editor-checklist-mode {
+  background: transparent;
+  border: none;
+  padding: 0;
+  min-height: auto;
+}
+
+.editor-checklist-mode:focus-within {
+  border-color: transparent;
+}
+
+.editor-checklist-mode .editor-content {
+  min-height: auto;
+}
+
 /* ── Checklist ── */
 .editor-checklist {
   list-style: none;
   padding-left: 0;
-  margin: 4px 0 8px 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .editor-list-item-checked,
 .editor-list-item-unchecked {
   position: relative;
-  padding-left: 32px;
-  margin: 8px 0;
+  padding: 14px 16px 14px 48px;
+  margin: 0;
   list-style: none;
   cursor: pointer;
-  transition: color 0.15s;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  transition: all 0.15s ease;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.editor-list-item-unchecked:hover {
+  border-color: var(--border);
+  background: var(--bg-raised);
 }
 
 .editor-list-item-unchecked::before {
   content: '';
   position: absolute;
   left: 0;
+  top: 0;
+  bottom: 0;
+  width: 48px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.editor-list-item-unchecked::after {
+  content: '';
+  position: absolute;
+  left: 16px;
   top: 50%;
   transform: translateY(-50%);
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   border: 2px solid var(--checkbox-border);
   border-radius: 6px;
-  cursor: pointer;
+  pointer-events: none;
   transition: all 0.15s;
 }
 
-.editor-list-item-unchecked:hover::before {
+.editor-list-item-unchecked:hover::after {
   border-color: var(--checkbox-hover);
+}
+
+.editor-list-item-checked {
+  text-decoration: line-through;
+  color: var(--text-faint);
+  border-color: transparent;
+}
+
+.editor-list-item-checked:hover {
+  border-color: var(--border-subtle);
 }
 
 .editor-list-item-checked::before {
   content: '';
   position: absolute;
   left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 18px;
-  height: 18px;
-  background: var(--accent);
-  border: 2px solid var(--accent);
-  border-radius: 6px;
+  top: 0;
+  bottom: 0;
+  width: 48px;
+  background: transparent;
+  border: none;
   cursor: pointer;
 }
 
 .editor-list-item-checked::after {
   content: '';
   position: absolute;
-  left: 6px;
+  left: 16px;
   top: 50%;
-  transform: translateY(-50%) translateY(-1px) rotate(45deg);
-  width: 5px;
-  height: 9px;
-  border: solid white;
-  border-width: 0 2px 2px 0;
-}
-
-.editor-list-item-checked {
-  text-decoration: line-through;
-  color: var(--text-faint);
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  background: var(--accent);
+  border: 2px solid var(--accent);
+  border-radius: 6px;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 14px;
 }
 
 /* ── Shortcut modal ── */

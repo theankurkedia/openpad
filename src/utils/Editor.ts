@@ -6,7 +6,7 @@ import {
 } from '@lexical/markdown';
 import { LexicalEditor, $getRoot } from 'lexical';
 
-export const EDITOR_TRANSFORMERS = [...TRANSFORMERS, CHECK_LIST];
+export const EDITOR_TRANSFORMERS = [CHECK_LIST, ...TRANSFORMERS];
 
 export function getEncodedContent(editor: LexicalEditor): string {
   let markdown = '';
