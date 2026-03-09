@@ -1,3 +1,4 @@
+import { Analytics } from '@vercel/analytics/react';
 import './App.css';
 import { ActionArea, ShortcutModal } from './components';
 
@@ -10,6 +11,7 @@ function App() {
       </div>
       <ActionArea />
       <ShortcutModal />
+      <Analytics />
     </div>
   );
 }
