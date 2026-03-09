@@ -5,12 +5,15 @@ function ShortcutBlock({ shortcut }: { shortcut: ShortcutType }) {
   const keys = shortcut.key.split(' ');
   return (
     <div className="shortcut-row">
+      <span className="shortcut-value">{shortcut.value}</span>
       <span className="shortcut-key">
         {keys.map((k, i) => (
-          <kbd key={i}>{k}</kbd>
+          <React.Fragment key={i}>
+            <kbd>{k}</kbd>
+            {i < keys.length - 1 && <span className="shortcut-plus">+</span>}
+          </React.Fragment>
         ))}
       </span>
-      <span className="shortcut-value">{shortcut.value}</span>
     </div>
   );
 }

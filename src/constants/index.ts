@@ -1,14 +1,19 @@
 import { ShortcutType } from '../types';
 
-// TODO: can map these shortcuts to a keycode and then use the same in Editor key bindings
-export const SHORTCUTS: Array<ShortcutType> = [
-  {
-    key: '⌘ B',
-    value: 'Bold',
-  },
+export const FORMAT_SHORTCUTS: Array<ShortcutType> = [
+  { key: '⌘ B', value: 'Bold' },
   { key: '⌘ I', value: 'Italic' },
   { key: '⌘ J', value: 'Code' },
+];
+
+export const ACTION_SHORTCUTS: Array<ShortcutType> = [
   { key: '⌘ S', value: 'Save' },
-  { key: '⌘ X', value: 'Clear' },
   { key: '⌘ C', value: 'Copy link' },
+  { key: '⌘ X', value: 'Clear' },
+  { key: '⌘ /', value: 'Shortcuts' },
+];
+
+export const SHORTCUTS: Array<ShortcutType> = [
+  ...FORMAT_SHORTCUTS,
+  ...ACTION_SHORTCUTS,
 ];
