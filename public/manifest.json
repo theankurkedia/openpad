@@ -1,7 +1,7 @@
 {
   "short_name": "openpad",
   "name": "Openpad",
-  "description": "An open notepad",
+  "description": "A free, open-source notepad that stores notes entirely in the URL. No backend, no sign-up — just write and share the link.",
   "icons": [
     {
       "src": "favicon.ico",
