@@ -111,8 +111,15 @@ function ActionArea() {
       if (editor) {
         const text = getPlainText(editor);
         if (text) {
-          const encoded = getEncodedContent(editor);
-          setInitialMarkdown(getDecodedContent(encoded));
+          if (newMode === 'checkbox') {
+            // Convert plain text lines into checklist markdown
+            const lines = text.split('\n').filter((l) => l.trim());
+            const checklistMd = lines.map((l) => `- [ ] ${l}`).join('\n');
+            setInitialMarkdown(checklistMd);
+          } else {
+            const encoded = getEncodedContent(editor);
+            setInitialMarkdown(getDecodedContent(encoded));
+          }
         } else {
           setInitialMarkdown('');
         }

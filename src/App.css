@@ -461,6 +461,44 @@
   background-size: 14px;
 }
 
+/* ── Drag and drop ── */
+.checklist-drag-handle {
+  display: none;
+  position: fixed;
+  z-index: 10;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  color: var(--text-faint);
+  cursor: grab;
+  transition: color 0.15s, background 0.15s;
+}
+
+.checklist-drag-handle:hover {
+  color: var(--text-secondary);
+  background: var(--bg-raised);
+}
+
+.checklist-drag-handle:active {
+  cursor: grabbing;
+}
+
+.checklist-drop-indicator {
+  display: none;
+  position: fixed;
+  z-index: 10;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--accent);
+  pointer-events: none;
+}
+
+.checklist-item-dragging {
+  opacity: 0.4;
+}
+
 /* ── Shortcut modal ── */
 .modal-overlay {
   position: fixed;

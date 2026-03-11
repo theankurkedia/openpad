@@ -28,6 +28,7 @@ import {
 import { $convertFromMarkdownString } from '@lexical/markdown';
 import { EDITOR_TRANSFORMERS } from '../utils/Editor';
 import { EditorMode } from '../types';
+import DragDropChecklistPlugin from './DragDropChecklistPlugin';
 
 const theme = {
   paragraph: 'editor-paragraph',
@@ -374,6 +375,7 @@ function Editor({
       <AutoFocusPlugin />
       <ListPlugin />
       {mode === 'checkbox' && <CheckListPlugin />}
+      {mode === 'checkbox' && <DragDropChecklistPlugin />}
       <MarkdownShortcutPlugin transformers={EDITOR_TRANSFORMERS} />
       <KeyboardShortcutsPlugin save={save} copy={copy} clear={clear} />
       <EditorRefPlugin onEditorReady={onEditorReady} />
