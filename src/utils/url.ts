@@ -1,17 +1,11 @@
-import TinyURL from 'tinyurl';
-
 async function getShortenedUrl(url: string): Promise<string> {
-  return new Promise<string>((resolve, reject) => {
-    TinyURL.shorten(url).then(
-      function (res: string) {
-        resolve(res);
-      },
-      function (err: Error) {
-        console.log(err);
-        reject(err);
-      }
-    );
-  });
+  const response = await fetch(
+    `/api/shorten?url=${encodeURIComponent(url)}`
+  );
+  if (!response.ok) {
+    throw new Error(`Shorten API error: ${response.status}`);
+  }
+  return response.text();
 }
 
 async function copyToClipboard(
